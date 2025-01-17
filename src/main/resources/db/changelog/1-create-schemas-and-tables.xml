@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+
+    <!-- Создание схемы -->
+    <changeSet id="001-create-schema" author="myName">
+        <sql>CREATE SCHEMA entities</sql>
+    </changeSet>
+
+    <!-- Создание таблиц -->
+    <changeSet id="002-create-tables" author="myName">
+        <!-- Таблица person -->
+        <createTable schemaName="entities" tableName="person">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_person"/>
+            </column>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(255)"/>
+        </createTable>
+
+        <!-- Таблица task -->
+        <createTable schemaName="entities" tableName="task">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_task"/>
+            </column>
+            <column name="header" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="task_status" type="VARCHAR(255)"/>
+            <column name="task_priority" type="VARCHAR(255)"/>
+            <column name="author_id" type="BIGINT">
+                <constraints foreignKeyName="fk_author_id" references="entities.person(id)"/>
+            </column>
+            <column name="performer_id" type="BIGINT">
+                <constraints foreignKeyName="fk_performer_id" references="entities.person(id)"/>
+            </column>
+            <column name="creation_date" type="timestamp without time zone"/>
+        </createTable>
+
+        <!-- Таблица comment -->
+        <createTable schemaName="entities" tableName="comment">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_commentator"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints foreignKeyName="fk_commentator_id" references="entities.person(id)"/>
+            </column>
+            <column name="task_id" type="BIGINT">
+                <constraints foreignKeyName="fk_task_id" references="entities.task(id)"/>
+            </column>
+            <column name="text" type="VARCHAR"/>
+            <column name="creation_date" type="timestamp without time zone"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Добавление столбцов в таблицу person -->
+    <changeSet id="003-alter-table-person" author="myName">
+        <addColumn schemaName="entities" tableName="person">
+            <column name="email" type="varchar(255)"/>
+        </addColumn>
+        <addColumn schemaName="entities" tableName="person">
+            <column name="role" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Изменение таблицы comment -->
+    <changeSet id="004-alter-table-comment" author="myName">
+        <dropColumn schemaName="entities" tableName="comment">
+            <column name="user_id"/>
+        </dropColumn>
+        <addColumn schemaName="entities" tableName="comment">
+            <column name="author_email" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

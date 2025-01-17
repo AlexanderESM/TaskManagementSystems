@@ -1,0 +1,19 @@
+version: "3.9"  # Указываем версию Docker Compose
+
+services:
+  db:  # Сервис для базы данных PostgreSQL
+    image: postgres:latest  # Используем последнюю версию образа PostgreSQL
+    environment:
+      POSTGRES_DB: "test_tasks_db"  # Название базы данных, которое будет создано
+      POSTGRES_USER: "postgres"  # Имя пользователя для подключения к базе данных
+      POSTGRES_PASSWORD: "postgres"  # Пароль пользователя для подключения к базе данных
+    ports:
+      - "5432:5432"  # Прокси для порта PostgreSQL (порт 5433 на хосте будет перенаправлен на порт 5432 контейнера)
+
+  cache:  # Сервис для Redis
+    image: "redis"  # Используем официальный образ Redis
+    ports:
+      - "6379:6379"  # Прокси для порта Redis (порт 6379 на хосте будет перенаправлен на порт 6379 контейнера)
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes  # Разрешаем использование пустого пароля для подключения к Redis
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL  # Отключаем команды FLUSHDB и FLUSHALL для повышения безопасности (они очищают базы данных)
